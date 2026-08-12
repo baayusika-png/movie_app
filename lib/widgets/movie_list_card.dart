@@ -76,7 +76,6 @@ class MovieListCard extends StatelessWidget {
                       ),
                     ),
 
-                    // Delete button
                     SizedBox(
                       width: 36,
                       height: 36,
@@ -159,7 +158,7 @@ class MovieListCard extends StatelessWidget {
   }
 
   Widget _buildImage() {
-    // If image is a local file path
+  
     if (image.isNotEmpty && !image.startsWith('http')) {
       return Image.file(
         File(image),
@@ -171,8 +170,6 @@ class MovieListCard extends StatelessWidget {
         },
       );
     }
-
-    // If image is an online URL
     return Image.network(
       image,
       width: 85,

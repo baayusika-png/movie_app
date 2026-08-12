@@ -4,7 +4,6 @@ import 'package:movie_app/providers/movie_provider.dart';
 import 'package:provider/provider.dart';
 
 class AddMovieScreen extends StatefulWidget {
-  // Pass an existing movie to edit it. Leave null to add a new movie.
   final MovieModel? movieToEdit;
 
   const AddMovieScreen({super.key, this.movieToEdit});
@@ -100,7 +99,6 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
 
             const SizedBox(height: 25),
 
-            // Poster preview (from URL typed below)
             Center(
               child: Container(
                 width: 150,

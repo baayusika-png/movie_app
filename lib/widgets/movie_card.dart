@@ -150,7 +150,6 @@ class MovieCard extends StatelessWidget {
   }
 
   Widget _buildMovieImage() {
-    // API ko image URL
     if (movie.image.startsWith('http')) {
       return Image.network(
         movie.image,
@@ -162,7 +161,6 @@ class MovieCard extends StatelessWidget {
       );
     }
 
-    // Gallery bata select gareko local image
     return Image.file(
       File(movie.image),
       fit: BoxFit.cover,

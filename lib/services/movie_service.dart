@@ -5,8 +5,7 @@ import 'package:movie_app/model/movie_model.dart';
 class MovieService {
   static const String baseUrl =
       'https://6a7c44b9a008c10e4cbf2fbb.mockapi.io/api/v1/movies/movies';
-
-  // GET all movies — response is a direct array, no "data" wrapper
+      
   static Future<List<MovieModel>> getMovies() async {
     final response = await http.get(Uri.parse(baseUrl));
 
@@ -18,7 +17,6 @@ class MovieService {
     }
   }
 
-  // POST — create movie. MockAPI returns the created object directly.
   static Future<MovieModel> addMovie(MovieModel movie) async {
     final response = await http.post(
       Uri.parse(baseUrl),
@@ -34,7 +32,6 @@ class MovieService {
     }
   }
 
-  // PUT — update movie by id
   static Future<MovieModel> updateMovie(
     String id,
     Map<String, dynamic> updates,
@@ -53,7 +50,6 @@ class MovieService {
     }
   }
 
-  // DELETE movie by id
   static Future<void> deleteMovie(String id) async {
     final response = await http.delete(Uri.parse('$baseUrl/$id'));
 

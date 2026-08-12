@@ -16,8 +16,6 @@ class _MyMoviesScreenState extends State<MyMoviesScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch persisted movies from the API as soon as this screen loads,
-    // so previously-added movies show up again after app restart.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<MovieProvider>().getMovies();
     });
