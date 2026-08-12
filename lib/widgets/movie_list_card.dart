@@ -29,7 +29,6 @@ class MovieListCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // ================= POSTER =================
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: _buildImage(),
@@ -37,12 +36,10 @@ class MovieListCard extends StatelessWidget {
 
           const SizedBox(width: 15),
 
-          // ================= RIGHT SIDE =================
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ================= TITLE + BUTTONS =================
                 Row(
                   children: [
                     Expanded(
@@ -94,7 +91,6 @@ class MovieListCard extends StatelessWidget {
 
                 const SizedBox(height: 8),
 
-                // ================= RATING + GENRE =================
                 Row(
                   children: [
                     Container(
@@ -140,7 +136,6 @@ class MovieListCard extends StatelessWidget {
 
                 const Spacer(),
 
-                // ================= DESCRIPTION =================
                 Text(
                   description,
                   maxLines: 2,
@@ -159,7 +154,6 @@ class MovieListCard extends StatelessWidget {
     );
   }
 
-  // ================= IMAGE HANDLER =================
   Widget _buildImage() {
     // If image is a local file path
     if (image.isNotEmpty && !image.startsWith('http')) {

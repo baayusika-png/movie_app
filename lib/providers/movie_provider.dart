@@ -3,7 +3,6 @@ import 'package:movie_app/model/movie_model.dart';
 import '../services/movie_service.dart';
 
 class MovieProvider extends ChangeNotifier {
-  // ================= API Movies =================
 
   List<MovieModel> _movies = [];
 
@@ -27,7 +26,6 @@ class MovieProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ================= Wishlist =================
 
   final List<MovieModel> _wishlistMovies = [];
 
@@ -47,7 +45,6 @@ class MovieProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ================= My Movies =================
 
   final List<MovieModel> _myMovies = [];
 

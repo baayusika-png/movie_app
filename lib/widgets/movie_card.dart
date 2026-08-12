@@ -9,10 +9,7 @@ import 'package:provider/provider.dart';
 class MovieCard extends StatelessWidget {
   final MovieModel movie;
 
-  const MovieCard({
-    super.key,
-    required this.movie,
-  });
+  const MovieCard({super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +47,6 @@ class MovieCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ================= POSTER =================
-
             Expanded(
               child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(
@@ -61,12 +56,7 @@ class MovieCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Hero(
-                      tag: movie.id,
-                      child: _buildMovieImage(),
-                    ),
-
-                    // ================= FAVORITE =================
+                    Hero(tag: movie.id, child: _buildMovieImage()),
 
                     Positioned(
                       top: 10,
@@ -74,8 +64,7 @@ class MovieCard extends StatelessWidget {
 
                       child: Consumer<MovieProvider>(
                         builder: (context, provider, child) {
-                          final isFav =
-                              provider.isFavorite(movie);
+                          final isFav = provider.isFavorite(movie);
 
                           return GestureDetector(
                             onTap: () {
@@ -83,12 +72,8 @@ class MovieCard extends StatelessWidget {
                             },
 
                             child: Icon(
-                              isFav
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: isFav
-                                  ? Colors.red
-                                  : Colors.white,
+                              isFav ? Icons.favorite : Icons.favorite_border,
+                              color: isFav ? Colors.red : Colors.white,
                               size: 26,
                             ),
                           );
@@ -100,8 +85,6 @@ class MovieCard extends StatelessWidget {
               ),
             ),
 
-            // ================= MOVIE INFO =================
-
             Padding(
               padding: const EdgeInsets.all(10),
 
@@ -110,7 +93,6 @@ class MovieCard extends StatelessWidget {
 
                 children: [
                   // Movie title
-
                   Text(
                     movie.title,
                     maxLines: 1,
@@ -126,11 +108,9 @@ class MovieCard extends StatelessWidget {
                   const SizedBox(height: 6),
 
                   // Year + Rating
-
                   Row(
                     children: [
                       // Year
-
                       Expanded(
                         child: Text(
                           movie.year,
@@ -145,23 +125,16 @@ class MovieCard extends StatelessWidget {
                       ),
 
                       // Rating
-
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                            size: 16,
-                          ),
+                          const Icon(Icons.star, color: Colors.amber, size: 16),
 
                           const SizedBox(width: 4),
 
                           Text(
                             movie.imdbRating,
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ],
                       ),
@@ -175,10 +148,6 @@ class MovieCard extends StatelessWidget {
       ),
     );
   }
-
-  // =====================================================
-  // IMAGE HANDLER
-  // =====================================================
 
   Widget _buildMovieImage() {
     // API ko image URL
@@ -204,20 +173,12 @@ class MovieCard extends StatelessWidget {
     );
   }
 
-  // =====================================================
-  // ERROR IMAGE
-  // =====================================================
-
   Widget _errorImage() {
     return Container(
       color: const Color(0xFF2A2A2A),
 
       child: const Center(
-        child: Icon(
-          Icons.movie,
-          color: Colors.white54,
-          size: 50,
-        ),
+        child: Icon(Icons.movie, color: Colors.white54, size: 50),
       ),
     );
   }

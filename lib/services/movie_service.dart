@@ -5,7 +5,6 @@ import 'package:movie_app/model/movie_model.dart';
 class MovieService {
   static const String baseUrl = 'https://fooapi.com/api/movies';
 
-  // GET Movies
   static Future<List<MovieModel>> getMovies() async {
     final response = await http.get(Uri.parse(baseUrl));
 
@@ -20,16 +19,12 @@ class MovieService {
     }
   }
 
-  // ADD Movie
   static Future<MovieModel> addMovie(MovieModel movie) async {
     final response = await http.post(
       Uri.parse(baseUrl),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(movie.toJson()),
     );
-
-    print(response.statusCode);
-    print(response.body);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final Map<String, dynamic> data = json.decode(response.body);

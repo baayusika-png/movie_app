@@ -20,9 +20,7 @@ class MovieBottomSheet extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: Color(0xFF121212),
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(28),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: SingleChildScrollView(
         controller: scrollController,
@@ -45,8 +43,6 @@ class MovieBottomSheet extends StatelessWidget {
 
             const SizedBox(height: 18),
 
-            // ================= POSTER =================
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Hero(
@@ -60,22 +56,15 @@ class MovieBottomSheet extends StatelessWidget {
 
             const SizedBox(height: 18),
 
-            // ================= GENRE + RATING =================
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Wrap(
                 spacing: 8,
-                children: [
-                  _chip(movie.genre),
-                  _ratingChip(movie.imdbRating),
-                ],
+                children: [_chip(movie.genre), _ratingChip(movie.imdbRating)],
               ),
             ),
 
             const SizedBox(height: 18),
-
-            // ================= TITLE =================
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -91,8 +80,6 @@ class MovieBottomSheet extends StatelessWidget {
 
             const SizedBox(height: 10),
 
-            // ================= YEAR / RUNTIME / RATED =================
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -104,27 +91,15 @@ class MovieBottomSheet extends StatelessWidget {
                       fontSize: 17,
                     ),
                   ),
-                  const Text(
-                    "  •  ",
-                    style: TextStyle(color: Colors.white38),
-                  ),
+                  const Text("  •  ", style: TextStyle(color: Colors.white38)),
                   Text(
                     movie.runtime,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 17,
-                    ),
+                    style: const TextStyle(color: Colors.white70, fontSize: 17),
                   ),
-                  const Text(
-                    "  •  ",
-                    style: TextStyle(color: Colors.white38),
-                  ),
+                  const Text("  •  ", style: TextStyle(color: Colors.white38)),
                   Text(
                     movie.rated,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 17,
-                    ),
+                    style: const TextStyle(color: Colors.white70, fontSize: 17),
                   ),
                 ],
               ),
@@ -134,14 +109,10 @@ class MovieBottomSheet extends StatelessWidget {
 
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Divider(
-                color: Colors.white24,
-              ),
+              child: Divider(color: Colors.white24),
             ),
 
             const SizedBox(height: 20),
-
-            // ================= DESCRIPTION =================
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -157,37 +128,25 @@ class MovieBottomSheet extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // ================= DIRECTOR =================
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 "Director: ${movie.director}",
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 16,
-                ),
+                style: const TextStyle(color: Colors.white70, fontSize: 16),
               ),
             ),
 
             const SizedBox(height: 10),
 
-            // ================= ACTORS =================
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 "Actors: ${movie.actors}",
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 16,
-                ),
+                style: const TextStyle(color: Colors.white70, fontSize: 16),
               ),
             ),
 
             const SizedBox(height: 30),
-
-            // ================= BUTTONS =================
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -204,10 +163,7 @@ class MovieBottomSheet extends StatelessWidget {
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
-                        icon: const Icon(
-                          Icons.play_arrow,
-                          color: Colors.white,
-                        ),
+                        icon: const Icon(Icons.play_arrow, color: Colors.white),
                         label: const Text(
                           "Watch Trailer",
                           style: TextStyle(
@@ -232,9 +188,7 @@ class MovieBottomSheet extends StatelessWidget {
                         height: 56,
                         decoration: BoxDecoration(
                           color: const Color(0xFF1E1E1E),
-                          border: Border.all(
-                            color: Colors.white24,
-                          ),
+                          border: Border.all(color: Colors.white24),
                           shape: BoxShape.circle,
                         ),
                         child: IconButton(
@@ -242,12 +196,8 @@ class MovieBottomSheet extends StatelessWidget {
                             provider.toggleFavorite(movie);
                           },
                           icon: Icon(
-                            isFav
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: isFav
-                                ? Colors.red
-                                : Colors.white,
+                            isFav ? Icons.favorite : Icons.favorite_border,
+                            color: isFav ? Colors.red : Colors.white,
                           ),
                         ),
                       );
@@ -264,10 +214,6 @@ class MovieBottomSheet extends StatelessWidget {
     );
   }
 
-  // =====================================================
-  // IMAGE HANDLER
-  // =====================================================
-
   Widget _buildMovieImage() {
     // API image URL
     if (movie.poster.startsWith('http')) {
@@ -277,55 +223,34 @@ class MovieBottomSheet extends StatelessWidget {
         width: double.infinity,
         fit: BoxFit.cover,
 
-        loadingBuilder: (
-          context,
-          child,
-          loadingProgress,
-        ) {
+        loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) {
             return child;
           }
 
           return const SizedBox(
             height: 430,
-            child: Center(
-              child: CircularProgressIndicator(
-                color: Colors.red,
-              ),
-            ),
+            child: Center(child: CircularProgressIndicator(color: Colors.red)),
           );
         },
 
-        errorBuilder: (
-          context,
-          error,
-          stackTrace,
-        ) {
+        errorBuilder: (context, error, stackTrace) {
           return _errorImage();
         },
       );
     }
 
-    // Gallery/local image
     return Image.file(
       File(movie.poster),
       height: 430,
       width: double.infinity,
       fit: BoxFit.cover,
 
-      errorBuilder: (
-        context,
-        error,
-        stackTrace,
-      ) {
+      errorBuilder: (context, error, stackTrace) {
         return _errorImage();
       },
     );
   }
-
-  // =====================================================
-  // ERROR IMAGE
-  // =====================================================
 
   Widget _errorImage() {
     return Container(
@@ -333,25 +258,14 @@ class MovieBottomSheet extends StatelessWidget {
       width: double.infinity,
       color: Colors.black26,
       child: const Center(
-        child: Icon(
-          Icons.movie,
-          color: Colors.white54,
-          size: 70,
-        ),
+        child: Icon(Icons.movie, color: Colors.white54, size: 70),
       ),
     );
   }
 
-  // =====================================================
-  // GENRE CHIP
-  // =====================================================
-
   Widget _chip(String text) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 7,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
       decoration: BoxDecoration(
         color: const Color(0xFF1F1F1F),
         borderRadius: BorderRadius.circular(20),
@@ -367,16 +281,9 @@ class MovieBottomSheet extends StatelessWidget {
     );
   }
 
-  // =====================================================
-  // RATING CHIP
-  // =====================================================
-
   Widget _ratingChip(String rating) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 7,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
       decoration: BoxDecoration(
         color: const Color(0xFF1F1F1F),
         borderRadius: BorderRadius.circular(20),
@@ -384,11 +291,7 @@ class MovieBottomSheet extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
-            Icons.star,
-            color: Colors.amber,
-            size: 16,
-          ),
+          const Icon(Icons.star, color: Colors.amber, size: 16),
           const SizedBox(width: 5),
           Text(
             rating,
