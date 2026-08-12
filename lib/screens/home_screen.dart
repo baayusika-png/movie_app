@@ -69,15 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemBuilder: (context, index) {
                       final movie = movieProvider.movies[index];
 
-                      return MovieCard(
-                        movie: {
-                          "title": movie.title,
-                          "year": movie.year,
-                          "rating": movie.imdbRating,
-                          "image": movie.poster,
-                          "description": movie.plot,
-                        },
-                      );
+                      return MovieCard(movie: movie);
                     },
                   ),
           ),

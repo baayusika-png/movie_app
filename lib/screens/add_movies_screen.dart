@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/model/movie_model.dart';
+import 'package:movie_app/providers/movie_provider.dart';
+import 'package:provider/provider.dart';
+import 'dart:io';
 
-class AddMovieScreen extends StatelessWidget {
-  AddMovieScreen({super.key});
+import 'package:image_picker/image_picker.dart';
 
-  final TextEditingController posterController = TextEditingController();
+class AddMovieScreen extends StatefulWidget {
+  const AddMovieScreen({super.key});
+
+  @override
+  State<AddMovieScreen> createState() => _AddMovieScreenState();
+}
+
+class _AddMovieScreenState extends State<AddMovieScreen> {
+  File? selectedImage;
+
+  final ImagePicker picker = ImagePicker();
   final TextEditingController titleController = TextEditingController();
   final TextEditingController yearController = TextEditingController();
   final TextEditingController ratingController = TextEditingController();
@@ -20,10 +33,20 @@ class AddMovieScreen extends StatelessWidget {
     "Thriller",
   ];
 
+  Future<void> pickImage() async {
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      setState(() {
+        selectedImage = File(image.path);
+      });
+    }
+  }
+
+  String selectedGenre = "Action";
+
   @override
   Widget build(BuildContext context) {
-    String selectedGenre = genres.first;
-
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
 
@@ -31,7 +54,9 @@ class AddMovieScreen extends StatelessWidget {
         backgroundColor: const Color(0xFF121212),
         elevation: 0,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.pop(context);
+          },
           icon: const Icon(Icons.arrow_back, color: Color(0xFFF6C7C7)),
         ),
         title: const Text(
@@ -42,8 +67,10 @@ class AddMovieScreen extends StatelessWidget {
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+
           children: [
             const Text(
               "Add New Movie",
@@ -57,44 +84,40 @@ class AddMovieScreen extends StatelessWidget {
             const SizedBox(height: 25),
 
             Center(
-              child: Container(
-                width: 150,
-                height: 220,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF3A3838),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.image_outlined,
-                      color: Color(0xFFF6C7C7),
-                      size: 40,
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      "Poster Preview",
-                      style: TextStyle(color: Color(0xFFF6C7C7)),
-                    ),
-                  ],
+              child: GestureDetector(
+                onTap: pickImage,
+                child: Container(
+                  width: 150,
+                  height: 220,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF3A3838),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: selectedImage == null
+                      ? const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.add_photo_alternate,
+                              color: Color(0xFFF6C7C7),
+                              size: 45,
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              "Select Poster",
+                              style: TextStyle(color: Color(0xFFF6C7C7)),
+                            ),
+                          ],
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.file(selectedImage!, fit: BoxFit.cover),
+                        ),
                 ),
               ),
             ),
 
             const SizedBox(height: 25),
-
-            const Text("Poster URL", style: TextStyle(color: Colors.white)),
-
-            const SizedBox(height: 8),
-
-            TextField(
-              controller: posterController,
-              style: const TextStyle(color: Colors.white),
-              decoration: inputDecoration("https://..."),
-            ),
-
-            const SizedBox(height: 18),
 
             const Text("Movie Title", style: TextStyle(color: Colors.white)),
 
@@ -113,13 +136,16 @@ class AddMovieScreen extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+
                     children: [
                       const Text("Year", style: TextStyle(color: Colors.white)),
+
                       const SizedBox(height: 8),
+
                       TextField(
                         controller: yearController,
                         style: const TextStyle(color: Colors.white),
-                        decoration: inputDecoration("2023"),
+                        decoration: inputDecoration("2025"),
                       ),
                     ],
                   ),
@@ -130,12 +156,15 @@ class AddMovieScreen extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+
                     children: [
                       const Text(
-                        "Rating (0-10)",
+                        "Rating",
                         style: TextStyle(color: Colors.white),
                       ),
+
                       const SizedBox(height: 8),
+
                       TextField(
                         controller: ratingController,
                         style: const TextStyle(color: Colors.white),
@@ -153,25 +182,24 @@ class AddMovieScreen extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            StatefulBuilder(
-              builder: (context, setState) {
-                return DropdownButtonFormField(
-                  dropdownColor: const Color(0xFF1E1E1E),
-                  initialValue: selectedGenre,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: inputDecoration(""),
-                  items: genres.map((genre) {
-                    return DropdownMenuItem(value: genre, child: Text(genre));
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedGenre = value!;
-                    });
-                  },
-                );
+            DropdownButtonFormField<String>(
+              initialValue: selectedGenre,
+              dropdownColor: const Color(0xFF1E1E1E),
+
+              style: const TextStyle(color: Colors.white),
+
+              decoration: inputDecoration(""),
+
+              items: genres.map((genre) {
+                return DropdownMenuItem(value: genre, child: Text(genre));
+              }).toList(),
+
+              onChanged: (value) {
+                setState(() {
+                  selectedGenre = value!;
+                });
               },
             ),
-
             const SizedBox(height: 18),
 
             const Text("Description", style: TextStyle(color: Colors.white)),
@@ -191,7 +219,53 @@ class AddMovieScreen extends StatelessWidget {
               width: double.infinity,
               height: 55,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  if (titleController.text.isEmpty ||
+                      yearController.text.isEmpty ||
+                      ratingController.text.isEmpty ||
+                      descriptionController.text.isEmpty ||
+                      selectedImage == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Please fill all fields")),
+                    );
+                    return;
+                  }
+
+                  MovieModel movie = MovieModel(
+                    id: "",
+                    title: titleController.text,
+                    year: yearController.text,
+                    poster: selectedImage?.path ?? "",
+                    rated: "PG",
+                    released: DateTime.now().toString(),
+                    runtime: "120 min",
+                    genre: selectedGenre,
+                    director: "Unknown",
+                    writer: "Unknown",
+                    actors: "Unknown",
+                    plot: descriptionController.text,
+                    language: "English",
+                    country: "Unknown",
+                    awards: "None",
+                    imdbRating: ratingController.text,
+                    imdbId: "N/A",
+                    boxOffice: "N/A",
+                  );
+
+                  try {
+                    await context.read<MovieProvider>().addMovie(movie);
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Movie Added Successfully")),
+                    );
+
+                    Navigator.pop(context);
+                  } catch (e) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(e.toString())));
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                   shape: RoundedRectangleBorder(
@@ -221,5 +295,14 @@ class AddMovieScreen extends StatelessWidget {
         borderSide: BorderSide.none,
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    yearController.dispose();
+    ratingController.dispose();
+    descriptionController.dispose();
+    super.dispose();
   }
 }

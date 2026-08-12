@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class MovieListCard extends StatelessWidget {
@@ -27,30 +29,27 @@ class MovieListCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Movie Poster
+          // ================= POSTER =================
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              image,
-              width: 85,
-              height: 130,
-              fit: BoxFit.cover,
-            ),
+            child: _buildImage(),
           ),
 
           const SizedBox(width: 15),
 
-          // Right Side
+          // ================= RIGHT SIDE =================
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Title + Buttons
+                // ================= TITLE + BUTTONS =================
                 Row(
                   children: [
                     Expanded(
                       child: Text(
                         title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
@@ -59,13 +58,12 @@ class MovieListCard extends StatelessWidget {
                       ),
                     ),
 
-                    Container(
+                    const SizedBox(width: 5),
+
+                    // Edit button
+                    SizedBox(
                       width: 36,
                       height: 36,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF121212),
-                        shape: BoxShape.circle,
-                      ),
                       child: IconButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {},
@@ -77,15 +75,10 @@ class MovieListCard extends StatelessWidget {
                       ),
                     ),
 
-                    const SizedBox(width: 8),
-
-                    Container(
+                    // Delete button
+                    SizedBox(
                       width: 36,
                       height: 36,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF121212),
-                        shape: BoxShape.circle,
-                      ),
                       child: IconButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {},
@@ -99,9 +92,9 @@ class MovieListCard extends StatelessWidget {
                   ],
                 ),
 
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
 
-                // Rating & Genre
+                // ================= RATING + GENRE =================
                 Row(
                   children: [
                     Container(
@@ -114,6 +107,7 @@ class MovieListCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           const Icon(Icons.star, color: Colors.amber, size: 15),
                           const SizedBox(width: 4),
@@ -130,11 +124,15 @@ class MovieListCard extends StatelessWidget {
 
                     const SizedBox(width: 12),
 
-                    Text(
-                      genre,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 15,
+                    Expanded(
+                      child: Text(
+                        genre,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 15,
+                        ),
                       ),
                     ),
                   ],
@@ -142,6 +140,7 @@ class MovieListCard extends StatelessWidget {
 
                 const Spacer(),
 
+                // ================= DESCRIPTION =================
                 Text(
                   description,
                   maxLines: 2,
@@ -149,7 +148,7 @@ class MovieListCard extends StatelessWidget {
                   style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 15,
-                    height: 1.4,
+                    height: 1.3,
                   ),
                 ),
               ],
@@ -157,6 +156,42 @@ class MovieListCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  // ================= IMAGE HANDLER =================
+  Widget _buildImage() {
+    // If image is a local file path
+    if (image.isNotEmpty && !image.startsWith('http')) {
+      return Image.file(
+        File(image),
+        width: 85,
+        height: 130,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return _errorImage();
+        },
+      );
+    }
+
+    // If image is an online URL
+    return Image.network(
+      image,
+      width: 85,
+      height: 130,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return _errorImage();
+      },
+    );
+  }
+
+  Widget _errorImage() {
+    return Container(
+      width: 85,
+      height: 130,
+      color: const Color(0xFF2A2A2A),
+      child: const Icon(Icons.movie, color: Colors.white54, size: 40),
     );
   }
 }

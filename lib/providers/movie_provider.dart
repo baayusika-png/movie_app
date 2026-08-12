@@ -3,6 +3,8 @@ import 'package:movie_app/model/movie_model.dart';
 import '../services/movie_service.dart';
 
 class MovieProvider extends ChangeNotifier {
+  // ================= API Movies =================
+
   List<MovieModel> _movies = [];
 
   List<MovieModel> get movies => _movies;
@@ -18,28 +20,50 @@ class MovieProvider extends ChangeNotifier {
     try {
       _movies = await MovieService.getMovies();
     } catch (e) {
-      debugPrint('Error loading movies: $e');
+      debugPrint("Error loading movies: $e");
     }
 
     _isLoading = false;
     notifyListeners();
   }
 
-  final List<Map<String, dynamic>> _wishlistMovies = [];
+  // ================= Wishlist =================
 
-  List<Map<String, dynamic>> get wishlistMovies => _wishlistMovies;
+  final List<MovieModel> _wishlistMovies = [];
 
-  bool isFavorite(Map<String, dynamic> movie) {
-    return _wishlistMovies.any((item) => item["title"] == movie["title"]);
+  List<MovieModel> get wishlistMovies => _wishlistMovies;
+
+  bool isFavorite(MovieModel movie) {
+    return _wishlistMovies.any((item) => item.id == movie.id);
   }
 
-  void toggleFavorite(Map<String, dynamic> movie) {
+  void toggleFavorite(MovieModel movie) {
     if (isFavorite(movie)) {
-      _wishlistMovies.removeWhere((item) => item["title"] == movie["title"]);
+      _wishlistMovies.removeWhere((item) => item.id == movie.id);
     } else {
       _wishlistMovies.add(movie);
     }
 
     notifyListeners();
+  }
+
+  // ================= My Movies =================
+
+  final List<MovieModel> _myMovies = [];
+
+  List<MovieModel> get myMovies => _myMovies;
+
+  Future<void> addMovie(MovieModel movie) async {
+    try {
+      final newMovie = await MovieService.addMovie(movie);
+
+      _myMovies.add(newMovie);
+      _movies.add(newMovie);
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Error adding movie: $e");
+      rethrow;
+    }
   }
 }

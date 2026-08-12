@@ -1,47 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/providers/movie_provider.dart';
+import 'package:movie_app/widgets/movie_card.dart';
 import 'package:provider/provider.dart';
-
-import '../widgets/movie_card.dart';
 
 class WishlistScreen extends StatelessWidget {
   const WishlistScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MovieProvider>(
-      builder: (context, provider, child) {
-        final movies = provider.wishlistMovies;
-
-        if (movies.isEmpty) {
-          return const Center(
-            child: Text(
-              "Wishlist is Empty",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
+    return Scaffold(
+      backgroundColor: const Color(0xFF121212),
+      body: Consumer<MovieProvider>(
+        builder: (context, provider, child) {
+          if (provider.wishlistMovies.isEmpty) {
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.favorite_border,
+                    color: Colors.white30,
+                    size: 80,
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    "Wishlist is Empty",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "Tap the heart icon to add movies.",
+                    style: TextStyle(
+                      color: Colors.white54,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          );
-        }
-
-        return GridView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: movies.length,
-          gridDelegate:
-              const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 20,
-            childAspectRatio: 0.55,
-          ),
-          itemBuilder: (context, index) {
-            return MovieCard(
-              movie: movies[index],
             );
-          },
-        );
-      },
+          }
+
+          return GridView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: provider.wishlistMovies.length,
+            gridDelegate:
+                const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 20,
+              childAspectRatio: 0.55,
+            ),
+            itemBuilder: (context, index) {
+              return MovieCard(
+                movie: provider.wishlistMovies[index],
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
