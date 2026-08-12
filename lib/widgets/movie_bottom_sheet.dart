@@ -60,7 +60,7 @@ class MovieBottomSheet extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Wrap(
                 spacing: 8,
-                children: [_chip(movie.genre), _ratingChip(movie.imdbRating)],
+                children: [_chip(movie.genre), _ratingChip(movie.rating)],
               ),
             ),
 
@@ -93,11 +93,6 @@ class MovieBottomSheet extends StatelessWidget {
                   ),
                   const Text("  •  ", style: TextStyle(color: Colors.white38)),
                   Text(
-                    movie.runtime,
-                    style: const TextStyle(color: Colors.white70, fontSize: 17),
-                  ),
-                  const Text("  •  ", style: TextStyle(color: Colors.white38)),
-                  Text(
                     movie.rated,
                     style: const TextStyle(color: Colors.white70, fontSize: 17),
                   ),
@@ -117,32 +112,12 @@ class MovieBottomSheet extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                movie.plot,
+                movie.description,
                 style: const TextStyle(
                   color: Colors.white70,
                   fontSize: 17,
                   height: 1.7,
                 ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                "Director: ${movie.director}",
-                style: const TextStyle(color: Colors.white70, fontSize: 16),
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                "Actors: ${movie.actors}",
-                style: const TextStyle(color: Colors.white70, fontSize: 16),
               ),
             ),
 
@@ -216,9 +191,9 @@ class MovieBottomSheet extends StatelessWidget {
 
   Widget _buildMovieImage() {
     // API image URL
-    if (movie.poster.startsWith('http')) {
+    if (movie.image.startsWith('http')) {
       return Image.network(
-        movie.poster,
+        movie.image,
         height: 430,
         width: double.infinity,
         fit: BoxFit.cover,
@@ -241,7 +216,7 @@ class MovieBottomSheet extends StatelessWidget {
     }
 
     return Image.file(
-      File(movie.poster),
+      File(movie.image),
       height: 430,
       width: double.infinity,
       fit: BoxFit.cover,

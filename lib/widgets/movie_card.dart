@@ -133,7 +133,7 @@ class MovieCard extends StatelessWidget {
                           const SizedBox(width: 4),
 
                           Text(
-                            movie.imdbRating,
+                            movie.rating,
                             style: const TextStyle(color: Colors.white),
                           ),
                         ],
@@ -151,9 +151,9 @@ class MovieCard extends StatelessWidget {
 
   Widget _buildMovieImage() {
     // API ko image URL
-    if (movie.poster.startsWith('http')) {
+    if (movie.image.startsWith('http')) {
       return Image.network(
-        movie.poster,
+        movie.image,
         fit: BoxFit.cover,
 
         errorBuilder: (context, error, stackTrace) {
@@ -164,7 +164,7 @@ class MovieCard extends StatelessWidget {
 
     // Gallery bata select gareko local image
     return Image.file(
-      File(movie.poster),
+      File(movie.image),
       fit: BoxFit.cover,
 
       errorBuilder: (context, error, stackTrace) {

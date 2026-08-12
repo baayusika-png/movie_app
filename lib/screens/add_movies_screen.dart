@@ -2,25 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/model/movie_model.dart';
 import 'package:movie_app/providers/movie_provider.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
-
-import 'package:image_picker/image_picker.dart';
 
 class AddMovieScreen extends StatefulWidget {
-  const AddMovieScreen({super.key});
+  // Pass an existing movie to edit it. Leave null to add a new movie.
+  final MovieModel? movieToEdit;
+
+  const AddMovieScreen({super.key, this.movieToEdit});
 
   @override
   State<AddMovieScreen> createState() => _AddMovieScreenState();
 }
 
 class _AddMovieScreenState extends State<AddMovieScreen> {
-  File? selectedImage;
+  late final TextEditingController titleController;
+  late final TextEditingController yearController;
+  late final TextEditingController ratingController;
+  late final TextEditingController descriptionController;
+  late final TextEditingController imageUrlController;
 
-  final ImagePicker picker = ImagePicker();
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController yearController = TextEditingController();
-  final TextEditingController ratingController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
+  bool isSaving = false;
+
+  bool get isEditing => widget.movieToEdit != null;
 
   final List<String> genres = [
     "Action",
@@ -33,17 +35,32 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
     "Thriller",
   ];
 
-  Future<void> pickImage() async {
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+  final List<String> ratedOptions = ["G", "PG", "PG-13", "R", "Not Rated"];
 
-    if (image != null) {
-      setState(() {
-        selectedImage = File(image.path);
-      });
-    }
+  late String selectedGenre;
+  late String selectedRated;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final movie = widget.movieToEdit;
+
+    titleController = TextEditingController(text: movie?.title ?? "");
+    yearController = TextEditingController(text: movie?.year ?? "");
+    ratingController = TextEditingController(text: movie?.rating ?? "");
+    descriptionController = TextEditingController(
+      text: movie?.description ?? "",
+    );
+    imageUrlController = TextEditingController(text: movie?.image ?? "");
+
+    selectedGenre = (movie != null && genres.contains(movie.genre))
+        ? movie.genre
+        : genres.first;
+    selectedRated = (movie != null && ratedOptions.contains(movie.rated))
+        ? movie.rated
+        : ratedOptions.first;
   }
-
-  String selectedGenre = "Action";
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +89,9 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
-            const Text(
-              "Add New Movie",
-              style: TextStyle(
+            Text(
+              isEditing ? "Edit Movie" : "Add New Movie",
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -83,41 +100,69 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
 
             const SizedBox(height: 25),
 
+            // Poster preview (from URL typed below)
             Center(
-              child: GestureDetector(
-                onTap: pickImage,
-                child: Container(
-                  width: 150,
-                  height: 220,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF3A3838),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: selectedImage == null
-                      ? const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.add_photo_alternate,
-                              color: Color(0xFFF6C7C7),
-                              size: 45,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              "Select Poster",
-                              style: TextStyle(color: Color(0xFFF6C7C7)),
-                            ),
-                          ],
-                        )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.file(selectedImage!, fit: BoxFit.cover),
-                        ),
+              child: Container(
+                width: 150,
+                height: 220,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF3A3838),
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                child: imageUrlController.text.isEmpty
+                    ? const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.image_outlined,
+                            color: Color(0xFFF6C7C7),
+                            size: 45,
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            "Poster Preview",
+                            style: TextStyle(color: Color(0xFFF6C7C7)),
+                          ),
+                        ],
+                      )
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          imageUrlController.text,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Center(
+                              child: Icon(
+                                Icons.broken_image_outlined,
+                                color: Colors.white38,
+                                size: 40,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
               ),
             ),
 
             const SizedBox(height: 25),
+
+            const Text(
+              "Poster Image URL",
+              style: TextStyle(color: Colors.white),
+            ),
+
+            const SizedBox(height: 8),
+
+            TextField(
+              controller: imageUrlController,
+              style: const TextStyle(color: Colors.white),
+              decoration: inputDecoration("https://example.com/poster.jpg"),
+              onChanged: (_) {
+                setState(() {});
+              },
+            ),
+
+            const SizedBox(height: 18),
 
             const Text("Movie Title", style: TextStyle(color: Colors.white)),
 
@@ -178,28 +223,69 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
 
             const SizedBox(height: 18),
 
-            const Text("Genre", style: TextStyle(color: Colors.white)),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Genre",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<String>(
+                        initialValue: selectedGenre,
+                        dropdownColor: const Color(0xFF1E1E1E),
+                        style: const TextStyle(color: Colors.white),
+                        decoration: inputDecoration(""),
+                        items: genres.map((genre) {
+                          return DropdownMenuItem(
+                            value: genre,
+                            child: Text(genre),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedGenre = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
 
-            const SizedBox(height: 8),
+                const SizedBox(width: 15),
 
-            DropdownButtonFormField<String>(
-              initialValue: selectedGenre,
-              dropdownColor: const Color(0xFF1E1E1E),
-
-              style: const TextStyle(color: Colors.white),
-
-              decoration: inputDecoration(""),
-
-              items: genres.map((genre) {
-                return DropdownMenuItem(value: genre, child: Text(genre));
-              }).toList(),
-
-              onChanged: (value) {
-                setState(() {
-                  selectedGenre = value!;
-                });
-              },
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Rated",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<String>(
+                        initialValue: selectedRated,
+                        dropdownColor: const Color(0xFF1E1E1E),
+                        style: const TextStyle(color: Colors.white),
+                        decoration: inputDecoration(""),
+                        items: ratedOptions.map((r) {
+                          return DropdownMenuItem(value: r, child: Text(r));
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedRated = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
+
             const SizedBox(height: 18),
 
             const Text("Description", style: TextStyle(color: Colors.white)),
@@ -219,69 +305,101 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
               width: double.infinity,
               height: 55,
               child: ElevatedButton(
-                onPressed: () async {
-                  if (titleController.text.isEmpty ||
-                      yearController.text.isEmpty ||
-                      ratingController.text.isEmpty ||
-                      descriptionController.text.isEmpty ||
-                      selectedImage == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Please fill all fields")),
-                    );
-                    return;
-                  }
-
-                  MovieModel movie = MovieModel(
-                    id: "",
-                    title: titleController.text,
-                    year: yearController.text,
-                    poster: selectedImage?.path ?? "",
-                    rated: "PG",
-                    released: DateTime.now().toString(),
-                    runtime: "120 min",
-                    genre: selectedGenre,
-                    director: "Unknown",
-                    writer: "Unknown",
-                    actors: "Unknown",
-                    plot: descriptionController.text,
-                    language: "English",
-                    country: "Unknown",
-                    awards: "None",
-                    imdbRating: ratingController.text,
-                    imdbId: "N/A",
-                    boxOffice: "N/A",
-                  );
-
-                  try {
-                    await context.read<MovieProvider>().addMovie(movie);
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Movie Added Successfully")),
-                    );
-
-                    Navigator.pop(context);
-                  } catch (e) {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text(e.toString())));
-                  }
-                },
+                onPressed: isSaving ? null : _handleSave,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                child: const Text(
-                  "Save Movie",
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
+                child: isSaving
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2.5,
+                        ),
+                      )
+                    : Text(
+                        isEditing ? "Update Movie" : "Save Movie",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _handleSave() async {
+    if (titleController.text.isEmpty ||
+        yearController.text.isEmpty ||
+        ratingController.text.isEmpty ||
+        descriptionController.text.isEmpty ||
+        imageUrlController.text.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Please fill all fields")));
+      return;
+    }
+
+    setState(() => isSaving = true);
+
+    try {
+      if (isEditing) {
+        final id = widget.movieToEdit!.id;
+
+        await context.read<MovieProvider>().updateMovie(id, {
+          "title": titleController.text,
+          "year": yearController.text,
+          "rated": selectedRated,
+          "genre": selectedGenre,
+          "description": descriptionController.text,
+          "image": imageUrlController.text,
+          "rating": ratingController.text,
+        });
+
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Movie Updated Successfully")),
+        );
+      } else {
+        final movie = MovieModel(
+          id: "",
+          title: titleController.text,
+          year: yearController.text,
+          rated: selectedRated,
+          genre: selectedGenre,
+          description: descriptionController.text,
+          image: imageUrlController.text,
+          rating: ratingController.text,
+        );
+
+        await context.read<MovieProvider>().addMovie(movie);
+
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Movie Added Successfully")),
+        );
+      }
+
+      if (!mounted) return;
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
+    } finally {
+      if (mounted) {
+        setState(() => isSaving = false);
+      }
+    }
   }
 
   InputDecoration inputDecoration(String hint) {
@@ -303,6 +421,7 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
     yearController.dispose();
     ratingController.dispose();
     descriptionController.dispose();
+    imageUrlController.dispose();
     super.dispose();
   }
 }

@@ -8,6 +8,8 @@ class MovieListCard extends StatelessWidget {
   final String rating;
   final String description;
   final String image;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   const MovieListCard({
     super.key,
@@ -16,6 +18,8 @@ class MovieListCard extends StatelessWidget {
     required this.rating,
     required this.description,
     required this.image,
+    this.onEdit,
+    this.onDelete,
   });
 
   @override
@@ -63,7 +67,7 @@ class MovieListCard extends StatelessWidget {
                       height: 36,
                       child: IconButton(
                         padding: EdgeInsets.zero,
-                        onPressed: () {},
+                        onPressed: onEdit,
                         icon: const Icon(
                           Icons.edit,
                           size: 18,
@@ -78,7 +82,7 @@ class MovieListCard extends StatelessWidget {
                       height: 36,
                       child: IconButton(
                         padding: EdgeInsets.zero,
-                        onPressed: () {},
+                        onPressed: onDelete,
                         icon: const Icon(
                           Icons.delete_outline,
                           size: 18,

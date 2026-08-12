@@ -3,22 +3,22 @@ import 'package:http/http.dart' as http;
 import 'package:movie_app/model/movie_model.dart';
 
 class MovieService {
-  static const String baseUrl = 'https://fooapi.com/api/movies';
+  static const String baseUrl =
+      'https://6a7c44b9a008c10e4cbf2fbb.mockapi.io/api/v1/movies/movies';
 
+  // GET all movies — response is a direct array, no "data" wrapper
   static Future<List<MovieModel>> getMovies() async {
     final response = await http.get(Uri.parse(baseUrl));
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> jsonData = json.decode(response.body);
-
-      final List<dynamic> data = jsonData["data"];
-
+      final List<dynamic> data = json.decode(response.body);
       return data.map((json) => MovieModel.fromJson(json)).toList();
     } else {
       throw Exception("Failed to load movies: ${response.statusCode}");
     }
   }
 
+  // POST — create movie. MockAPI returns the created object directly.
   static Future<MovieModel> addMovie(MovieModel movie) async {
     final response = await http.post(
       Uri.parse(baseUrl),
@@ -28,10 +28,37 @@ class MovieService {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final Map<String, dynamic> data = json.decode(response.body);
-
-      return MovieModel.fromJson(data['data'] ?? data);
+      return MovieModel.fromJson(data);
     } else {
       throw Exception('Failed to add movie: ${response.statusCode}');
+    }
+  }
+
+  // PUT — update movie by id
+  static Future<MovieModel> updateMovie(
+    String id,
+    Map<String, dynamic> updates,
+  ) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/$id'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(updates),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return MovieModel.fromJson(data);
+    } else {
+      throw Exception('Failed to update movie: ${response.statusCode}');
+    }
+  }
+
+  // DELETE movie by id
+  static Future<void> deleteMovie(String id) async {
+    final response = await http.delete(Uri.parse('$baseUrl/$id'));
+
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      throw Exception('Failed to delete movie: ${response.statusCode}');
     }
   }
 }

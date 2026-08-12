@@ -3,7 +3,6 @@ import 'package:movie_app/model/movie_model.dart';
 import '../services/movie_service.dart';
 
 class MovieProvider extends ChangeNotifier {
-
   List<MovieModel> _movies = [];
 
   List<MovieModel> get movies => _movies;
@@ -26,7 +25,6 @@ class MovieProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
   final List<MovieModel> _wishlistMovies = [];
 
   List<MovieModel> get wishlistMovies => _wishlistMovies;
@@ -45,7 +43,6 @@ class MovieProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
   final List<MovieModel> _myMovies = [];
 
   List<MovieModel> get myMovies => _myMovies;
@@ -60,6 +57,37 @@ class MovieProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint("Error adding movie: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> updateMovie(String id, Map<String, dynamic> updates) async {
+    try {
+      final updatedMovie = await MovieService.updateMovie(id, updates);
+
+      final myIndex = _myMovies.indexWhere((m) => m.id == id);
+      if (myIndex != -1) _myMovies[myIndex] = updatedMovie;
+
+      final allIndex = _movies.indexWhere((m) => m.id == id);
+      if (allIndex != -1) _movies[allIndex] = updatedMovie;
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Error updating movie: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> deleteMovie(String id) async {
+    try {
+      await MovieService.deleteMovie(id);
+
+      _myMovies.removeWhere((m) => m.id == id);
+      _movies.removeWhere((m) => m.id == id);
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Error deleting movie: $e");
       rethrow;
     }
   }
