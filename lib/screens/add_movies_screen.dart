@@ -157,7 +157,7 @@ class AddMovieScreen extends StatelessWidget {
               builder: (context, setState) {
                 return DropdownButtonFormField(
                   dropdownColor: const Color(0xFF1E1E1E),
-                  value: selectedGenre,
+                  initialValue: selectedGenre,
                   style: const TextStyle(color: Colors.white),
                   decoration: inputDecoration(""),
                   items: genres.map((genre) {

@@ -16,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     Future.microtask(() {
+      // ignore: use_build_context_synchronously
       Provider.of<MovieProvider>(context, listen: false).getMovies();
     });
   }

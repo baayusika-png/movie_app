@@ -108,6 +108,7 @@ class MyMoviesScreen extends StatelessWidget {
       ),
 
       floatingActionButton: FloatingActionButton(
+        heroTag: 'addMovieButton',
         backgroundColor: Colors.red,
         onPressed: () {
           Navigator.push(

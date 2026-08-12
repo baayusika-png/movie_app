@@ -3,7 +3,6 @@ import 'package:movie_app/model/movie_model.dart';
 import '../services/movie_service.dart';
 
 class MovieProvider extends ChangeNotifier {
-
   List<MovieModel> _movies = [];
 
   List<MovieModel> get movies => _movies;
@@ -19,7 +18,7 @@ class MovieProvider extends ChangeNotifier {
     try {
       _movies = await MovieService.getMovies();
     } catch (e) {
-      print('Error loading movies: $e');
+      debugPrint('Error loading movies: $e');
     }
 
     _isLoading = false;
@@ -31,16 +30,12 @@ class MovieProvider extends ChangeNotifier {
   List<Map<String, dynamic>> get wishlistMovies => _wishlistMovies;
 
   bool isFavorite(Map<String, dynamic> movie) {
-    return _wishlistMovies.any(
-      (item) => item["title"] == movie["title"],
-    );
+    return _wishlistMovies.any((item) => item["title"] == movie["title"]);
   }
 
   void toggleFavorite(Map<String, dynamic> movie) {
     if (isFavorite(movie)) {
-      _wishlistMovies.removeWhere(
-        (item) => item["title"] == movie["title"],
-      );
+      _wishlistMovies.removeWhere((item) => item["title"] == movie["title"]);
     } else {
       _wishlistMovies.add(movie);
     }
