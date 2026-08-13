@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:movie_app/screens/home_screen.dart';
 import 'package:movie_app/screens/my_movies_screen.dart';
 import 'package:movie_app/screens/profile_screen.dart';
@@ -74,9 +76,23 @@ class _MainShellState extends State<MainShell> {
         currentIndex: currentIndex,
 
         onTap: (index) {
-          setState(() {
-            currentIndex = index;
-          });
+          final auth = context.read<AuthProvider>();
+
+          if (index == 0) {
+            setState(() {
+              currentIndex = index;
+            });
+          } else {
+            if (auth.isLoggedIn) {
+              setState(() {
+                currentIndex = index;
+              });
+            } else {
+              setState(() {
+                currentIndex = index;
+              });
+            }
+          }
         },
 
         type: BottomNavigationBarType.fixed,

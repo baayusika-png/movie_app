@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/model/movie_model.dart';
+import 'package:movie_app/providers/auth_provider.dart';
 import 'package:movie_app/providers/movie_provider.dart';
 import 'package:movie_app/screens/add_movies_screen.dart';
+import 'package:movie_app/widgets/login_required.dart';
 import 'package:movie_app/widgets/movie_list_card.dart';
 import 'package:provider/provider.dart';
 
@@ -24,9 +26,7 @@ class _MyMoviesScreenState extends State<MyMoviesScreen> {
   void _openEditScreen(MovieModel movie) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => AddMovieScreen(movieToEdit: movie),
-      ),
+      MaterialPageRoute(builder: (_) => AddMovieScreen(movieToEdit: movie)),
     );
   }
 
@@ -47,17 +47,11 @@ class _MyMoviesScreenState extends State<MyMoviesScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext, false),
-              child: const Text(
-                "No",
-                style: TextStyle(color: Colors.white70),
-              ),
+              child: const Text("No", style: TextStyle(color: Colors.white70)),
             ),
             TextButton(
               onPressed: () => Navigator.pop(dialogContext, true),
-              child: const Text(
-                "Yes",
-                style: TextStyle(color: Colors.red),
-              ),
+              child: const Text("Yes", style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -71,19 +65,31 @@ class _MyMoviesScreenState extends State<MyMoviesScreen> {
       await context.read<MovieProvider>().deleteMovie(movie.id);
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Movie Deleted")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Movie Deleted")));
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthProvider>();
+
+    if (!auth.isLoggedIn) {
+      return const Scaffold(
+        backgroundColor: Color(0xFF121212),
+        body: LoginRequired(
+          title: "Login to Access My Movies",
+          subtitle: "Sign in to add, edit and manage your movie collection.",
+        ),
+      );
+    }
+
     return Consumer<MovieProvider>(
       builder: (context, provider, child) {
         return Scaffold(
@@ -127,8 +133,7 @@ class _MyMoviesScreenState extends State<MyMoviesScreen> {
                       ),
                       child: const Row(
                         children: [
-                          Icon(Icons.sort,
-                              color: Colors.white, size: 18),
+                          Icon(Icons.sort, color: Colors.white, size: 18),
                           SizedBox(width: 6),
                           Text(
                             "Recently Added",
@@ -151,57 +156,57 @@ class _MyMoviesScreenState extends State<MyMoviesScreen> {
                           child: CircularProgressIndicator(color: Colors.red),
                         )
                       : provider.movies.isEmpty
-                          ? const Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.movie_creation_outlined,
-                                    size: 80,
-                                    color: Colors.white30,
-                                  ),
-                                  SizedBox(height: 20),
-                                  Text(
-                                    "No Movies Added Yet",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    "Tap the + button to add your first movie.",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white54,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
+                      ? const Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.movie_creation_outlined,
+                                size: 80,
+                                color: Colors.white30,
                               ),
-                            )
-                          : RefreshIndicator(
-                              onRefresh: () => provider.getMovies(),
-                              child: ListView.separated(
-                                itemCount: provider.movies.length,
-                                separatorBuilder: (context, index) =>
-                                    const SizedBox(height: 15),
-                                itemBuilder: (context, index) {
-                                  final movie = provider.movies[index];
+                              SizedBox(height: 20),
+                              Text(
+                                "No Movies Added Yet",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                "Tap the + button to add your first movie.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white54,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : RefreshIndicator(
+                          onRefresh: () => provider.getMovies(),
+                          child: ListView.separated(
+                            itemCount: provider.movies.length,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: 15),
+                            itemBuilder: (context, index) {
+                              final movie = provider.movies[index];
 
-                                  return MovieListCard(
-                                    title: movie.title,
-                                    genre: movie.genre,
-                                    rating: movie.rating,
-                                    description: movie.description,
-                                    image: movie.image,
-                                    onEdit: () => _openEditScreen(movie),
-                                    onDelete: () => _confirmDelete(movie),
-                                  );
-                                },
-                              ),
-                            ),
+                              return MovieListCard(
+                                title: movie.title,
+                                genre: movie.genre,
+                                rating: movie.rating,
+                                description: movie.description,
+                                image: movie.image,
+                                onEdit: () => _openEditScreen(movie),
+                                onDelete: () => _confirmDelete(movie),
+                              );
+                            },
+                          ),
+                        ),
                 ),
               ],
             ),
@@ -213,9 +218,7 @@ class _MyMoviesScreenState extends State<MyMoviesScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => const AddMovieScreen(),
-                ),
+                MaterialPageRoute(builder: (_) => const AddMovieScreen()),
               );
             },
             child: const Icon(Icons.add, color: Colors.white),
