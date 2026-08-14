@@ -73,7 +73,7 @@ class MovieCard extends StatelessWidget {
 
                             child: Icon(
                               isFav ? Icons.favorite : Icons.favorite_border,
-                              color: isFav ? Colors.red : Colors.white,
+                              color: isFav ? Color(0xFFE50914) : Colors.white,
                               size: 26,
                             ),
                           );

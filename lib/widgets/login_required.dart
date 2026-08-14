@@ -15,7 +15,7 @@ class LoginRequired extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.lock_outline, size: 90, color: Colors.red),
+            const Icon(Icons.lock_outline, size: 90, color: Color(0xFFE50914)),
 
             const SizedBox(height: 20),
 
@@ -42,7 +42,9 @@ class LoginRequired extends StatelessWidget {
               width: 180,
               height: 50,
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFE50914),
+                ),
                 onPressed: () {
                   Navigator.push(
                     context,

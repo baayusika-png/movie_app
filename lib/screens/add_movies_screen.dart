@@ -305,7 +305,7 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
               child: ElevatedButton(
                 onPressed: isSaving ? null : _handleSave,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  backgroundColor: Color(0xFFE50914),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),

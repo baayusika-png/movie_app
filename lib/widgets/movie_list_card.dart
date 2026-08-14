@@ -71,7 +71,7 @@ class MovieListCard extends StatelessWidget {
                         icon: const Icon(
                           Icons.edit,
                           size: 18,
-                          color: Colors.orange,
+                          color: Color.fromARGB(255, 138, 86, 7),
                         ),
                       ),
                     ),
@@ -85,7 +85,7 @@ class MovieListCard extends StatelessWidget {
                         icon: const Icon(
                           Icons.delete_outline,
                           size: 18,
-                          color: Colors.red,
+                          color: Color(0xFFE50914),
                         ),
                       ),
                     ),
@@ -158,7 +158,6 @@ class MovieListCard extends StatelessWidget {
   }
 
   Widget _buildImage() {
-  
     if (image.isNotEmpty && !image.startsWith('http')) {
       return Image.file(
         File(image),

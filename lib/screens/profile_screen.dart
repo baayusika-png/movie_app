@@ -105,7 +105,7 @@ class ProfileScreen extends StatelessWidget {
                   context.read<AuthProvider>().logout();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  backgroundColor: Color(0xFFE50914),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(35),
                   ),

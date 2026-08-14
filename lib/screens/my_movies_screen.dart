@@ -51,7 +51,10 @@ class _MyMoviesScreenState extends State<MyMoviesScreen> {
             ),
             TextButton(
               onPressed: () => Navigator.pop(dialogContext, true),
-              child: const Text("Yes", style: TextStyle(color: Colors.red)),
+              child: const Text(
+                "Yes",
+                style: TextStyle(color: Color(0xFFE50914)),
+              ),
             ),
           ],
         );
@@ -153,7 +156,9 @@ class _MyMoviesScreenState extends State<MyMoviesScreen> {
                 Expanded(
                   child: provider.isLoading
                       ? const Center(
-                          child: CircularProgressIndicator(color: Colors.red),
+                          child: CircularProgressIndicator(
+                            color: Color(0xFFE50914),
+                          ),
                         )
                       : provider.movies.isEmpty
                       ? const Center(
@@ -214,7 +219,7 @@ class _MyMoviesScreenState extends State<MyMoviesScreen> {
 
           floatingActionButton: FloatingActionButton(
             heroTag: "addMovieButton",
-            backgroundColor: Colors.red,
+            backgroundColor: Color(0xFFE50914),
             onPressed: () {
               Navigator.push(
                 context,
