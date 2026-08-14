@@ -1,17 +1,183 @@
-# movie_app
+# Popcorn - Flutter Movie App
 
-A new Flutter project.
+MovieVerse is a Flutter application that allows users to browse movies, save favorites to a wishlist, and manage their own movie collection. The app demonstrates **Provider state management**, **REST API integration**, **authentication**, and **CRUD operations** while following a clean project structure.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+# Features
 
-A few resources to get you started if this is your first Flutter project:
+## Authentication
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+* User Login
+* Authentication using REST API
+* Login Required widget for protected pages
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## Home
+
+* Fetch movies from REST API
+* Display movie cards with posters
+* View movie details
+* Bottom Sheet preview
+* Hero animation for smooth image transitions
+
+---
+
+## Wishlist
+
+* Add movies to wishlist
+* Remove movies from wishlist
+* Real-time updates using Provider
+* Empty state when no movies are saved
+
+---
+
+## My Movies
+
+Users can manage their own movies through complete CRUD functionality.
+
+Features include:
+
+* Add Movie
+* View Movie
+* Update Movie
+* Delete Movie
+
+---
+
+## Profile
+
+* User Profile
+* Personal Details
+* Logout
+
+---
+
+# Technologies Used
+
+* Flutter
+* Dart
+* Provider
+* HTTP Package
+* REST API
+
+---
+
+# Project Structure
+
+```text
+lib/
+│
+├── app/
+│   └── movie_app.dart
+│
+├── model/
+│   └── movie_model.dart
+│
+├── providers/
+│   ├── auth_provider.dart
+│   └── movie_provider.dart
+│
+├── screens/
+│   ├── login_screen.dart
+│   ├── home_screen.dart
+│   ├── wishlist_screen.dart
+│   ├── my_movies_screen.dart
+│   ├── add_movies_screen.dart
+│   ├── profile_screen.dart
+│   └── main_shell.dart
+│
+├── services/
+│   ├── auth_service.dart
+│   └── movie_service.dart
+│
+├── widgets/
+│   ├── login_required.dart
+│   ├── movie_card.dart
+│   ├── movie_list_card.dart
+│   └── movie_bottom_sheet.dart
+│
+└── main.dart
+```
+
+---
+
+# API Integration
+
+The application communicates with a REST API to perform CRUD operations.
+
+Supported operations:
+
+* GET Movies
+* POST Movie
+* PUT Movie
+* DELETE Movie
+* User Authentication
+
+Each movie contains information such as:
+
+* ID
+* Title
+* Year
+* Genre
+* Director
+* Actors
+* Description
+* Poster Image
+* IMDb Rating
+
+---
+
+# State Management
+
+The application uses **Provider** for state management.
+
+### AuthProvider
+
+Responsible for:
+
+* User Login
+* Authentication State
+* Logout
+
+### MovieProvider
+
+Responsible for:
+
+* Fetching Movies
+* Searching Movies
+* Wishlist Management
+* Loading State
+* Add Movie
+* Update Movie
+* Delete Movie
+* UI Refresh using `notifyListeners()`
+
+---
+
+# UI Components
+
+Reusable widgets include:
+
+* Movie Card
+* Movie List Card
+* Movie Bottom Sheet
+* Login Required Widget
+
+---
+
+# Screens
+
+* Login Screen
+* Home Screen
+* Wishlist Screen
+* My Movies Screen
+* Add Movie Screen
+* Profile Screen
+
+---
+
+# License
+
+This project is for educational and learning purposes.
