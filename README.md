@@ -1,6 +1,6 @@
 # Popcorn - Flutter Movie App
 
-MovieVerse is a Flutter application that allows users to browse movies, save favorites to a wishlist, and manage their own movie collection. The app demonstrates **Provider state management**, **REST API integration**, **authentication**, and **CRUD operations** while following a clean project structure.
+Popcorc is a Flutter application that allows users to browse movies, save favorites to a wishlist, and manage their own movie collection. The app demonstrates **Provider state management**, **REST API integration**, **authentication**, and **CRUD operations** while following a clean project structure.
 
 ---
 
